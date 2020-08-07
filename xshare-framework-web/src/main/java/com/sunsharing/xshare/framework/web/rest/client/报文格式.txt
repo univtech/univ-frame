@@ -1,0 +1,130 @@
+http://192.168.0.222:8080/XShare/01System/SourceCode/trunk/05production/xshare-management/xshare-management-commmon
+这个工程用于存放server和client公用的代码
+
+
+
+请求报文规范示例：
+1、GET请求：http://localhost:8080/xshare/user/view/123
+Java定义：
+（1）请求路径：/user/view/{userId}
+（2）请求参数：@PathVariable("userId") userId
+
+2、GET请求：http://localhost:8080/xshare/user/view?userId=123
+Java定义：
+（1）请求路径：/user/view
+（2）请求参数：@RequestParam("userId") userId
+
+3、POST请求：http://localhost:8080/xshare/user/add
+{
+    "userId": "123"
+}
+Java定义：
+（1）请求路径：/user/add
+（2）请求参数：@RequestBody AddUserRequest request
+
+4、POST请求：http://localhost:8080/xshare/user/add/batch
+[
+    {
+        "userId": "123"
+    },
+    {
+        "userId": "456"
+    }
+]
+Java定义：
+（1）请求路径：/user/add
+（2）请求参数：@RequestBody List<UserView> userViews
+
+5、POST请求：http://localhost:8080/xshare/user/list
+{
+    page：{
+        "currentPage": 1,
+        "linesPerPage": 10
+    }
+    data:{
+        "userId": "123"
+    }        
+}
+Java定义：
+（1）请求路径：/user/list
+（2）请求参数：@RequestBody PageReuqst<UserView> request
+
+响应报文规范示例：
+1、没有数据对方返回：
+{
+    "status":"",
+    "message":"",
+    "errorDetail":""
+    "data": ""
+}
+Java定义：
+完整对象：ObjectResponse<String>
+接口定义：void
+
+2、返回单个数据对象：
+{
+    "status":"",
+    "message":"",
+    "errorDetail":"",
+    "data":{
+        "userId":"123"
+    }
+}
+Java定义：
+完整对象：ObjectResponse<T>
+接口定义：T
+
+3、返回多个数据对象：
+{
+    "status":"",
+    "message":"",
+    "errorDetail":"",
+    "data":[
+        {
+            "userId":"123"
+        },
+        {
+            "userId":"456"
+        }
+    ]
+}
+Java定义：
+完整对象：ListResponse<T>
+接口定义：List<T>
+
+4、分页查询返回：
+{
+    "status":"",
+    "message":"",
+    "errorDetail":"",
+    "data":{
+        "page":{
+            "currentPage":1,
+            "linesPerPage":10,
+            "totalNum":100,
+            "totalPage":10
+        },
+        "list":[
+            {
+                "userId":"123"
+            },
+            {
+                "userId":"456"
+            }
+        ]
+    }
+}
+Java定义：
+完整对象：ObjectResponse<PageDataView<T>>
+接口定义：PageDataView<T>
+
+
+
+
+
+
+
+
+
+
+

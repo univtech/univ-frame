@@ -1,0 +1,129 @@
+
+class HeadersExtractor implements ResponseExtractor<HttpHeaders>
+headersExtractor() 返回 ResponseExtractor<HttpHeaders>
+
+class ResponseEntityResponseExtractor<T> implements ResponseExtractor<ResponseEntity<T>>
+responseEntityExtractor(Type responseType) 返回 ResponseExtractor<ResponseEntity<T>>
+
+class AcceptHeaderRequestCallback implements RequestCallback
+acceptHeaderRequestCallback(Class<T> responseType) 返回 RequestCallback
+
+class HttpEntityRequestCallback extends AcceptHeaderRequestCallback
+httpEntityCallback(Object requestBody) 返回 RequestCallback
+httpEntityCallback(Object requestBody, Type responseType) 返回 RequestCallback
+
+void handleResponse(URI url, HttpMethod method, ClientHttpResponse response)
+T doExecute(URI url, HttpMethod method, RequestCallback requestCallback, ResponseExtractor<T> responseExtractor)
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+public <T> ResponseEntity<T> getForEntity(String url, Class<T> responseType, Map<String, ?> uriVariables) throws RestClientException
+public <T> T                 getForObject(String url, Class<T> responseType, Map<String, ?> uriVariables) throws RestClientException
+
+RequestCallback requestCallback = acceptHeaderRequestCallback(responseType);
+ResponseExtractor<ResponseEntity<T>> responseExtractor = responseEntityExtractor(responseType);
+return execute(url, HttpMethod.GET, requestCallback, responseExtractor, uriVariables);
+
+RequestCallback requestCallback = acceptHeaderRequestCallback(responseType);
+HttpMessageConverterExtractor<T> responseExtractor = new HttpMessageConverterExtractor<T>(responseType, getMessageConverters(), logger);
+return execute(url, HttpMethod.GET, requestCallback, responseExtractor, uriVariables);
+
+
+
+public <T> ResponseEntity<T> postForEntity(String url, Object request, Class<T> responseType, Map<String, ?> uriVariables) throws RestClientException
+public <T> T                 postForObject(String url, Object request, Class<T> responseType, Map<String, ?> uriVariables) throws RestClientException
+
+public <T> T                 patchForObject(String url, Object request, Class<T> responseType, Map<String, ?> uriVariables) throws RestClientException
+
+RequestCallback requestCallback = httpEntityCallback(request, responseType);
+ResponseExtractor<ResponseEntity<T>> responseExtractor = responseEntityExtractor(responseType);
+return execute(url, HttpMethod.POST, requestCallback, responseExtractor, uriVariables);
+
+RequestCallback requestCallback = httpEntityCallback(request, responseType);
+HttpMessageConverterExtractor<T> responseExtractor = new HttpMessageConverterExtractor<T>(responseType, getMessageConverters(), logger);
+return execute(url, HttpMethod.POST, requestCallback, responseExtractor, uriVariables);
+
+RequestCallback requestCallback = httpEntityCallback(request, responseType);
+HttpMessageConverterExtractor<T> responseExtractor = new HttpMessageConverterExtractor<T>(responseType, getMessageConverters(), logger);
+return execute(url, HttpMethod.PATCH, requestCallback, responseExtractor, uriVariables);
+
+
+
+
+public URI                   postForLocation(String url, Object request, Map<String, ?> uriVariables) throws RestClientException
+public void                  put            (String url, Object request, Map<String, ?> uriVariables) throws RestClientException
+
+RequestCallback requestCallback = httpEntityCallback(request);
+HttpHeaders headers = execute(url, HttpMethod.POST, requestCallback, headersExtractor(), uriVariables);
+return headers.getLocation();
+
+RequestCallback requestCallback = httpEntityCallback(request);
+execute(url, HttpMethod.PUT, requestCallback, null, uriVariables);
+
+
+
+public HttpHeaders           headForHeaders (String url, Map<String, ?> uriVariables) throws RestClientException
+public Set<HttpMethod>       optionsForAllow(String url, Map<String, ?> uriVariables) throws RestClientException
+public void                  delete         (String url, Map<String, ?> uriVariables) throws RestClientException
+
+return execute(url, HttpMethod.HEAD, null, headersExtractor(), uriVariables);
+
+ResponseExtractor<HttpHeaders> headersExtractor = headersExtractor();
+HttpHeaders headers = execute(url, HttpMethod.OPTIONS, null, headersExtractor, uriVariables);
+return headers.getAllow();
+
+execute(url, HttpMethod.DELETE, null, null, uriVariables);
+-----------------------------------------------------------------------------------------
+org.springframework.web.bind.annotation.Mapping
+org.springframework.web.bind.annotation.RequestMapping
+org.springframework.web.bind.annotation.GetMapping
+org.springframework.web.bind.annotation.PostMapping
+org.springframework.web.bind.annotation.DeleteMapping
+org.springframework.web.bind.annotation.PutMapping
+org.springframework.web.bind.annotation.PatchMapping
+
+
+
+
+org.springframework.web.bind.annotation.PathVariable
+org.springframework.web.bind.annotation.RequestParam
+org.springframework.web.bind.annotation.RequestAttribute
+org.springframework.web.bind.annotation.RequestBody
+org.springframework.web.bind.annotation.RequestHeader
+org.springframework.web.bind.annotation.RequestPart
+
+org.springframework.web.bind.annotation.ResponseBody
+org.springframework.web.bind.annotation.ResponseStatus
+
+org.springframework.web.bind.annotation.CookieValue
+org.springframework.web.bind.annotation.SessionAttribute
+org.springframework.web.bind.annotation.SessionAttributes
+
+org.springframework.web.bind.annotation.InitBinder
+org.springframework.web.bind.annotation.MatrixVariable
+org.springframework.web.bind.annotation.ModelAttribute
+org.springframework.web.bind.annotation.CrossOrigin
+
+org.springframework.web.bind.annotation.ExceptionHandler
+
+org.springframework.web.bind.annotation.RestController
+
+org.springframework.web.bind.annotation.ControllerAdvice
+org.springframework.web.bind.annotation.RestControllerAdvice
+
+    public static void main(String[] args) {
+        UriTemplateHandler uriTemplateHandler = new DefaultUriTemplateHandler();
+        Map<String, Object> uriVariables = new HashMap<>();
+        uriVariables.put("userId", 123);
+        uriVariables.put("userName", "glede");
+        URI uri = uriTemplateHandler.expand("/{userId}/get/{userName}", "glede", 123);
+        System.out.println(uri.getPath());
+    }
+
+    // /{id}/{name}?id1=id1&name1=name1
+    @RequestMapping("/{id}/{name}")
+    public void ddd(@PathVariable("id") String id, @PathVariable("name") String name, @RequestParam("id1") String id1, @RequestParam("name1") String name1, @RequestBody String name3,
+            @RequestBody String name4) {
+
+    }
+
